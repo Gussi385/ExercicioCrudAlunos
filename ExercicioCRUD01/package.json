@@ -1,0 +1,15 @@
+{
+  "name": "exerciciocrud01",
+  "version": "1.0.0",
+  "description": "exercicio referente ao crud de alunos",
+  "license": "ISC",
+  "author": "Miguel Gussi",
+  "type": "commonjs",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "express": "^5.1.0"
+  }
+}
