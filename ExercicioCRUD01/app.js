@@ -1,0 +1,102 @@
+const express = require('express')
+const app = express()
+const port = 3000
+
+app.use(express.json())
+
+
+//first endpoint
+app.get('/', (req, res) => {
+   res.send('TESTE!')
+})
+
+let alunos = [
+   {ra: 123, name: "Gussi", turma: "Administração", 
+      cursos: ['JavaScript', "ReactJS", "Redux"]
+   },
+   {ra: 122, name: "Luan", turma: "ADS",
+      cursos: ["VueJS", "Ruby on Rails", "Node"]}];
+
+      //CADASTRO ALUNOS
+      app.post('/alunos', (req, res) =>{
+         alunos.push(req.body);
+         res.send(alunos);
+      })
+      
+      //CADASTRO CURSOS
+      app.post('/alunos/cursos', (req,res) =>{
+         const {ra} = req.query;
+         const {cursos} = req.body;
+         const index = alunos.findIndex(aluno => aluno.ra == ra)
+         
+         if (!alunos[index].cursos){
+            alunos[index].cursos = [];
+         }
+         alunos[index].cursos.push(...cursos);
+         res.send(alunos[index]);
+      })
+      
+      //ALTERAR ALUNO
+      app.put('/alunos', (req,res) =>{
+         const {ra} = req.query;
+         const {name, turma} = req.body;
+         const index = alunos.findIndex(aluno => aluno.ra == req.query.ra)
+         alunos[index] = {ra : ra, name: req.body.name, turma: req.body.turma}
+         res.send(alunos[index]);
+      })
+      
+      //ALTERAR CURSO
+      app.put('/alunos/cursos', (req, res) =>{
+         const {ra} = req.query;
+         const {cursos} = req.body;
+         const index = alunos.findIndex(aluno => aluno.ra == ra)
+         alunos[index].cursos = {cursos: cursos}
+         res.send(alunos[index])
+      })
+      
+      //DELETAR ALUNO
+      app.delete('/alunos', (req, res) =>{
+         const {ra} = req.query;
+         const index = alunos.findIndex(aluno => aluno.ra == req.query.ra)
+         alunos.splice(index, 1)
+         res.send(alunos)
+      })
+      
+    
+      //FUNÇÃO PRA COLOCAR EM UPPER
+      function Upper(cursos){
+            return  cursos.toUpperCase()
+         }
+      
+      //DELETAR CURSO
+      app.delete('/alunos/cursos/cursosdeletar', (req, res) =>{
+         const {ra} = req.query;
+         const cursoDeletado = Upper(req.body.cursos);
+
+         const index = alunos.findIndex(aluno => aluno.ra == ra)
+         
+         for (let i = 0; i < alunos[index].cursos.length; i++){
+            let cursoAtual = Upper(alunos[index].cursos[i])
+            console.log(cursoAtual);
+            if (cursoAtual == cursoDeletado){
+               alunos[index].cursos.splice(i, 1);
+            }
+         }
+         console.log(cursoDeletado)
+         res.send(alunos[index]);
+      });
+      
+      //MOSTRAR ALUNOS---okk
+      app.get('/alunos', (req,res) =>{
+         res.send(alunos);
+     })
+     //MOSTRA ALUNOS PELO RA----ok
+     app.get('/alunos/alunora', (req, res) =>{
+      const { ra } = req.query;
+      const index = alunos.findIndex(x => x.ra == ra);
+      res.send(alunos[index]);
+     })
+
+app.listen(port, () => {
+  console.log(`Example app listening on port ${port}`)
+})
